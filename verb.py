@@ -1,7 +1,8 @@
 import sqlite3
 import random
 import datetime
-
+import sys
+import os
 class verb:
         def __init__(self,*data):
                 self.id               = data[0] if len(data)>=1 else ""
@@ -14,7 +15,8 @@ class verb:
                         self.get()
 
         def get(self):
-                con = sqlite3.connect("verbs.db")
+                path = f"{os.sep}".join(os.path.realpath(__file__).split(os.sep)[:-1])
+                con = sqlite3.connect(f"{path}/verbs.db")
                 cur = con.cursor()
                 sql = """
                         select * from verbs where 
@@ -47,7 +49,8 @@ class verb:
                                        last_time='{str(datetime.datetime.now())[:10]}' 
                                        where id='{self.id}'
                         """
-                con = sqlite3.connect("verbs.db")
+                path = f"{os.sep}".join(os.path.realpath(__file__).split(os.sep)[:-1])
+                con = sqlite3.connect(f"{path}/verbs.db")
                 cur = con.cursor()
                 try:
                         data = cur.execute(sql)
