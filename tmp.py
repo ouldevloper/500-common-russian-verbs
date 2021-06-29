@@ -372,6 +372,7 @@ class Ui_MainWindow(object):
                 self.label_3.setText(_translate("MainWindow", "  words/run"))
                 self.label_4.setText(_translate("MainWindow", "  Nick name"))
                 self.save_user.setText(_translate("MainWindow", "Save"))
+
                 self.next.clicked.connect(self.next_clicked)
                 self.back.clicked.connect(self.back_clicked)
 

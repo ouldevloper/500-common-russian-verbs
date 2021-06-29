@@ -3,6 +3,8 @@ import random
 import datetime
 import sys
 import os
+
+
 class verb:
         def __init__(self,*data):
                 self.id               = data[0] if len(data)>=1 else ""
@@ -58,3 +60,157 @@ class verb:
                 finally:        
                         cur.close()
                         con.close()
+                        
+class Settings:
+        def __init__(self,*data):
+                self.id = 1
+                self.native_lang = 'ar'
+                self.foreing_lang = 'en'
+                if len(data)!=3:
+                        self.get()
+                else:
+                        self.id           = data[0]
+                        self.native_lang  = data[1]
+                        self.foreing_lang = data[2]
+
+
+        def get(self):
+                ret = (self.id,self.native_lang,self.foreing_lang)
+                sql = "select * from settings"
+                path = f"{os.sep}".join(os.path.realpath(__file__).split(os.sep)[:-1])
+                con = sqlite3.connect(f"{path}/verbs.db")
+                cur  = con.cursor()
+                try:
+                        res = cur.execute(sql)
+                        con.commit()
+                        ret = res.fetchone()
+                        self.id = ret[0]
+                        self.native_lang = ret[1]
+                        self.foreing_lang = ret[2]
+                except:
+                        pass
+                return ret
+
+        def update(self):
+                ret = False
+                sql = f"UPDATE settings SET native_lang='{self.native_lang}',foreing_lang='{self.foreing_lang}' where id={self.id}"
+                path = f"{os.sep}".join(os.path.realpath(__file__).split(os.sep)[:-1])
+                con = sqlite3.connect(f"{path}/verbs.db")
+                cur  = con.cursor()
+                try:
+                        cur.execute(sql)
+                        con.commit()
+                        ret = True
+                except:
+                        ret = False
+                return ret
+        
+class lang(object):
+        def __init__(self,lang_code,ru_id=1):
+                self.lang_code = lang_code
+                self.ru_verb_id = ru_id
+                
+        def get(self):
+                ret = ()
+                sql = f"""select * from {self.lang_code}_trans where ru_verb_id={self.ru_verb_id}"""
+                path = f"{os.sep}".join(os.path.realpath(__file__).split(os.sep)[:-1])
+                con = sqlite3.connect(f"{path}/verbs.db")
+                cur  = con.cursor()
+                try:
+                        res = cur.execute(sql)
+                        con.commit()
+                        ret = res.fetchall()
+                except:
+                        pass
+
+                return ret
+
+class User(object):
+        def __init__(self,*data):
+                self.user = ""
+                self.word_count = ""
+                if len(data)!=2:
+                        self.get()
+                else:
+                        self.user = data[0]
+                        self.word_count = data[1]
+
+        def get(self):
+                ret = (self.user,self.word_count)
+                sql = "select * from user"
+                path = f"{os.sep}".join(os.path.realpath(__file__).split(os.sep)[:-1])
+                con = sqlite3.connect(f"{path}/verbs.db")
+                cur  = con.cursor()
+                try:
+                        res = cur.execute(sql)
+                        con.commit()
+                        ret = res.fetchone()
+                        self.user = ret[1]
+                        self.word_count = ret[0]
+                except:
+                        pass
+                return ret
+
+        def update(self):
+                ret = False
+                sql = f"UPDATE user SET user='{self.user}',word_count='{self.word_count}'"
+                path = f"{os.sep}".join(os.path.realpath(__file__).split(os.sep)[:-1])
+                con = sqlite3.connect(f"{path}/verbs.db")
+                cur  = con.cursor()
+                try:
+                        cur.execute(sql)
+                        con.commit()
+                        ret = True
+                except:
+                        ret = False
+                return ret
+
+
+#class CRUD:
+#        con=sqlite3.connect("verbs.db")
+#        cur = con.cursor()
+#        
+#        def __init__(self):
+#                pass
+#        @staticmethod
+#        def add(table_name,col_val:dict={}):
+#                ret = False
+#                con=sqlite3.connect("verbs.db")
+#                cur = con.cursor()
+#                cols = ",".join([name for name in col_val.keys()])
+#                vals = "',".join([name for name in col_val.values()])
+#                sql = f"INSERT  INTO {table_name} ({cols}) VALUES ('{vals}')"
+#                []
+#                try:
+#                        cur.execute(sql)
+#                        con.commit()
+#                        ret = True
+#                except sqlite3.Error:
+#                        pass
+#                finally:
+#                        cur.close()
+#                        con.close()
+#                return ret
+#
+#        @staticmethod
+#        def delete(table_name,conditions:str):
+#                ret = False
+#                con=sqlite3.connect("verbs.db")
+#                cur = con.cursor()
+#                sql = f"DELETE FROM  {table_name} WHERE  {conditions}"
+#                try:
+#                        cur.execute(sql)
+#                        con.commit()
+#                        ret = True
+#                except sqlite3.Error:
+#                        pass
+#                finally:
+#                        cur.close()
+#                        con.close()
+#                return ret
+#        @staticmethod
+#        def update():
+#                pass
+#        @staticmethod
+#        def get():
+#                pass
